@@ -10,6 +10,8 @@ import SocialLink from '../components/SocialLink';
 import Triangle from '../components/Triangle';
 import ImageSubtitle from '../components/ImageSubtitle';
 import Hide from '../components/Hide';
+import ReactMarkdown from 'react-markdown';
+import markdownRenderer from '../components/MarkdownRenderer';
 
 const Background = () => (
   <div>
@@ -44,7 +46,7 @@ const Background = () => (
   </div>
 );
 
-const CARD_HEIGHT = '200px';
+const CARD_HEIGHT = '600px';
 
 const MEDIA_QUERY_SMALL = '@media (max-width: 400px)';
 
@@ -107,24 +109,12 @@ const Project = ({
   name,
   description,
   projectUrl,
-  repositoryUrl,
   type,
   publishedDate,
   logo,
 }) => (
   <Card p={0}>
     <Flex style={{ height: CARD_HEIGHT }}>
-      <TextContainer>
-        <span>
-          <Title my={2} pb={1}>
-            {name}
-          </Title>
-        </span>
-        <Text width={[1]} style={{ overflow: 'auto' }}>
-          {description}
-        </Text>
-      </TextContainer>
-
       <ImageContainer>
         <ProjectImage src={logo.image.src} alt={logo.title} />
         <ProjectTag>
@@ -135,27 +125,33 @@ const Project = ({
           >
             <Box mx={1} fontSize={5}>
               <SocialLink
-                name="Check repository"
-                fontAwesomeIcon="github"
-                url={repositoryUrl}
-              />
-            </Box>
-            <Box mx={1} fontSize={5}>
-              <SocialLink
                 name="See project"
                 fontAwesomeIcon="globe-americas"
                 url={projectUrl}
               />
             </Box>
           </Flex>
-          <ImageSubtitle bg="primary" color="white" y="bottom" x="right" round>
-            {type}
-          </ImageSubtitle>
           <Hide query={MEDIA_QUERY_SMALL}>
             <ImageSubtitle bg="backgroundDark">{publishedDate}</ImageSubtitle>
           </Hide>
         </ProjectTag>
       </ImageContainer>
+      <TextContainer>
+        <span>
+          <Title my={2} pb={1}>
+            {name}
+          </Title>
+        </span>
+        <Text width={[1]} style={{ overflow: 'auto' }}>
+          <ReactMarkdown
+            source={description.childMarkdownRemark.rawMarkdownBody}
+            renderers={markdownRenderer}
+          />
+        </Text>
+        <ImageSubtitle bg="primary" color="white" y="bottom" x="right" round>
+          {type}
+        </ImageSubtitle>
+      </TextContainer>
     </Flex>
   </Card>
 );
@@ -164,7 +160,6 @@ Project.propTypes = {
   name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   projectUrl: PropTypes.string.isRequired,
-  repositoryUrl: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   publishedDate: PropTypes.string.isRequired,
   logo: PropTypes.shape({
@@ -177,7 +172,7 @@ Project.propTypes = {
 
 const Projects = () => (
   <Section.Container id="projects" Background={Background}>
-    <Section.Header name="Projects" icon="💻" label="notebook" />
+    <Section.Header name="Projects"  />
     <StaticQuery
       query={graphql`
         query ProjectsQuery {
@@ -185,14 +180,17 @@ const Projects = () => (
             projects {
               id
               name
-              description
+              description {
+                childMarkdownRemark {
+                  rawMarkdownBody
+                }
+              }
               projectUrl
-              repositoryUrl
               publishedDate(formatString: "YYYY")
               type
               logo {
                 title
-                image: resize(width: 200, quality: 100) {
+                image: resize(width: 600, quality: 100) {
                   src
                 }
               }

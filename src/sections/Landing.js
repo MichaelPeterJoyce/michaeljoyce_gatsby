@@ -72,7 +72,15 @@ const LandingPage = () => (
             >
               {`Hello, I'm ${name}!`}
             </Heading>
-
+            <Heading
+              textAlign="center"
+              as="h2"
+              color="primary"
+              fontSize={[3, 4, 5]}
+              mb={[3, 5]}
+            >
+              {`UI Developer - Dundalk, Ireland`}
+            </Heading>
             <Heading
               as="h2"
               color="primary"
