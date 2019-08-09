@@ -62,9 +62,6 @@ const TextContainer = styled.div`
   flex-direction: column;
   padding: 10px;
   width: 100%;
-  ${MEDIA_QUERY_SMALL} {
-    width: calc(100% - (${CARD_HEIGHT} / 2));
-  }
 `;
 
 const Project = ({ name, description, type }) => (
