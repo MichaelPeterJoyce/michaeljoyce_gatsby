@@ -1,22 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Image, Text, Flex, Box } from 'rebass';
+import { Text, Flex } from 'rebass';
 import { StaticQuery, graphql } from 'gatsby';
 import styled from 'styled-components';
 import Fade from 'react-reveal/Fade';
 import Section from '../components/Section';
 import { CardContainer, Card } from '../components/Card';
-import SocialLink from '../components/SocialLink';
 import Triangle from '../components/Triangle';
 import ImageSubtitle from '../components/ImageSubtitle';
-import Hide from '../components/Hide';
+
 import ReactMarkdown from 'react-markdown';
 import markdownRenderer from '../components/MarkdownRenderer';
 
 const Background = () => (
   <div>
     <Triangle
-      color="secondaryLight"
+      color="primaryDark"
       height={['80vh', '80vh']}
       width={['100vw', '100vw']}
       invertX
@@ -30,7 +29,7 @@ const Background = () => (
     />
 
     <Triangle
-      color="primaryDark"
+      color="secondaryDark"
       height={['25vh', '40vh']}
       width={['75vw', '60vw']}
       invertX
@@ -46,16 +45,16 @@ const Background = () => (
   </div>
 );
 
-const CARD_HEIGHT = '600px';
+const CARD_HEIGHT = '100%';
 
 const MEDIA_QUERY_SMALL = '@media (max-width: 400px)';
 
 const Title = styled(Text)`
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
   text-transform: uppercase;
   display: table;
-  border-bottom: ${props => props.theme.colors.primary} 5px solid;
+  border-bottom: ${props => props.theme.colors.primary} 2px solid;
 `;
 
 const TextContainer = styled.div`
@@ -63,82 +62,17 @@ const TextContainer = styled.div`
   flex-direction: column;
   padding: 10px;
   width: 100%;
-  width: calc(100% - ${CARD_HEIGHT});
-
   ${MEDIA_QUERY_SMALL} {
     width: calc(100% - (${CARD_HEIGHT} / 2));
   }
 `;
 
-const ImageContainer = styled.div`
-  margin: auto;
-  width: ${CARD_HEIGHT};
-
-  ${MEDIA_QUERY_SMALL} {
-    width: calc(${CARD_HEIGHT} / 2);
-  }
-`;
-
-const ProjectImage = styled(Image)`
-  width: ${CARD_HEIGHT};
-  height: ${CARD_HEIGHT};
-  padding: 40px;
-  margin-top: 0px;
-
-  ${MEDIA_QUERY_SMALL} {
-    height: calc(${CARD_HEIGHT} / 2);
-    width: calc(${CARD_HEIGHT} / 2);
-    margin-top: calc(${CARD_HEIGHT} / 4);
-    padding: 10px;
-  }
-`;
-
-const ProjectTag = styled.div`
-  position: relative;
-  height: ${CARD_HEIGHT};
-  top: calc(
-    -${CARD_HEIGHT} - 3.5px
-  ); /*don't know why I have to add 3.5px here ... */
-
-  ${MEDIA_QUERY_SMALL} {
-    top: calc(-${CARD_HEIGHT} - 3.5px + (${CARD_HEIGHT} / 4));
-  }
-`;
-
-const Project = ({
-  name,
-  description,
-  projectUrl,
-  type,
-  publishedDate,
-  logo,
-}) => (
+const Project = ({ name, description, type }) => (
   <Card p={0}>
     <Flex style={{ height: CARD_HEIGHT }}>
-      <ImageContainer>
-        <ProjectImage src={logo.image.src} alt={logo.title} />
-        <ProjectTag>
-          <Flex
-            style={{
-              float: 'right',
-            }}
-          >
-            <Box mx={1} fontSize={5}>
-              <SocialLink
-                name="See project"
-                fontAwesomeIcon="globe-americas"
-                url={projectUrl}
-              />
-            </Box>
-          </Flex>
-          <Hide query={MEDIA_QUERY_SMALL}>
-            <ImageSubtitle bg="backgroundDark">{publishedDate}</ImageSubtitle>
-          </Hide>
-        </ProjectTag>
-      </ImageContainer>
-      <TextContainer>
-        <span>
-          <Title my={2} pb={1}>
+      <TextContainer style={{ padding: '2em' }}>
+        <span style={{ marginBottom: '1em' }}>
+          <Title my={1} pb={3}>
             {name}
           </Title>
         </span>
@@ -159,9 +93,7 @@ const Project = ({
 Project.propTypes = {
   name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  projectUrl: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  publishedDate: PropTypes.string.isRequired,
   logo: PropTypes.shape({
     image: PropTypes.shape({
       src: PropTypes.string,
@@ -172,7 +104,7 @@ Project.propTypes = {
 
 const Projects = () => (
   <Section.Container id="projects" Background={Background}>
-    <Section.Header name="Projects"  />
+    <Section.Header name="Projects" />
     <StaticQuery
       query={graphql`
         query ProjectsQuery {
@@ -190,7 +122,7 @@ const Projects = () => (
               type
               logo {
                 title
-                image: resize(width: 600, quality: 100) {
+                image: resize(quality: 100) {
                   src
                 }
               }
@@ -199,7 +131,7 @@ const Projects = () => (
         }
       `}
       render={({ contentfulAbout }) => (
-        <CardContainer minWidth="350px">
+        <CardContainer>
           {contentfulAbout.projects.map((p, i) => (
             <Fade bottom delay={i * 200} key={p.id}>
               <Project {...p} />
